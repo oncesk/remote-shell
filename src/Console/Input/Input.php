@@ -32,4 +32,9 @@ class Input extends ArgvInput implements InputInterface
 		$this->bind($definition);
 		$this->validate();
 	}
+
+    public function __toString(): string
+    {
+        return $this->commandName . ' ' . parent::__toString();
+    }
 }

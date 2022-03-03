@@ -7,7 +7,7 @@ use Shell\Server\ConnectionAwareInterface;
 use Shell\Server\ConnectionInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Quit extends CallableCommand implements ConnectionAwareInterface
+class Quit extends CallableCommand implements ConnectionAwareInterface, AliasAwareInterface
 {
 	private ?ConnectionInterface $connection;
 
@@ -32,5 +32,8 @@ class Quit extends CallableCommand implements ConnectionAwareInterface
 		$this->connection = $connection;
 	}
 
-
+    public function getAliases(): array
+    {
+        return ['exit'];
+    }
 }

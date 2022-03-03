@@ -4,8 +4,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Shell\Loop\LogLoop;
-use Shell\Loop\SelectLoop;
-use Shell\Loop\EvLoop;
+use Shell\Loop\Factory;
 use Shell\Server\LoggedServer;
 use Shell\Server\Server;
 use Shell\Server\Connection;
@@ -20,24 +19,38 @@ use Shell\Console\Command\Finder\ByName;
 use Shell\Console\Command\Finder\MatchableFinder;
 use Shell\Console\Application;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+$isDebug = (bool) (getenv('SHELL_DEBUG') ?? false);
+
+$logger = new Monolog\Logger('default');
+$logger->pushHandler(
+    $isDebug ? new \Monolog\Handler\StreamHandler(STDOUT) : new \Monolog\Handler\NullHandler()
+);
+
+$address = sprintf(
+    'tcp://%s:%d',
+    getenv('SHELL_HOST') ?? 'localhost',
+    getenv('SHELL_PORT') ?? 80,
+);
+
 $socket = stream_socket_server(
-    'tcp://0.0.0.0:8080',
+    $address,
     $errorCode,
     $errorMsg,
     STREAM_SERVER_LISTEN | STREAM_SERVER_BIND
 );
 stream_set_blocking($socket, 0);
 
+$logger->debug('Listening ' . $address);
+
 if (!$socket) {
     echo $errorCode . ' - ' . $errorMsg;
     die;
 }
 
-$logger = new Monolog\Logger('default');
-$logger->pushHandler(new \Monolog\Handler\StreamHandler(STDOUT));
-
-//$loop = new LogLoop($logger, new SelectLoop());
-$loop = new LogLoop($logger, new EvLoop());
+$loop = new LogLoop($logger, Factory::create());
 $connectionFactory = new CallableConnectionFactory(function () use ($logger) {
     return new LoggedConnection(
 	    $logger,
@@ -60,5 +73,10 @@ $shell = new Shell(
     $commandFinder
 );
 
-$application = new Application($shell, $store, $loop, $commandFinder);
-$application->run($server, $shell);
+try {
+    $application = new Application($shell, $store, $loop, $commandFinder);
+    $application->run($server, $shell);
+} catch (\Exception $exception) {
+    echo $exception->getMessage();
+    exit($exception->getCode() ?? 1);
+}

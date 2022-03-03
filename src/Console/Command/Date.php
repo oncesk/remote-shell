@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Date implements UserLandCommandInterface, MatchableCommandInterface, UsageAwareInterface, AliasAwareInterface
+class Date implements UserLandCommandInterface, UsageAwareInterface, AliasAwareInterface
 {
 	private InputDefinition $definition;
 	private string $defaultFormat = 'm-d-Y H:i';
@@ -48,11 +48,6 @@ class Date implements UserLandCommandInterface, MatchableCommandInterface, Usage
 	public function getDefinition(): InputDefinition
 	{
 		return $this->definition;
-	}
-
-	public function isMatch(string $input): bool
-	{
-		return $this->isDatetime($input) || $this->isTime($input);
 	}
 
 	public function getUsages(): array
