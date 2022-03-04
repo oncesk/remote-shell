@@ -19,9 +19,6 @@ use Shell\Console\Command\Finder\ByName;
 use Shell\Console\Command\Finder\MatchableFinder;
 use Shell\Console\Application;
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
-
 $isDebug = (bool) (getenv('SHELL_DEBUG') ?? false);
 
 $logger = new Monolog\Logger('default');
@@ -29,10 +26,13 @@ $logger->pushHandler(
     $isDebug ? new \Monolog\Handler\StreamHandler(STDOUT) : new \Monolog\Handler\NullHandler()
 );
 
+$host = getenv('SHELL_HOST');
+$port = getenv('SHELL_PORT');
+
 $address = sprintf(
     'tcp://%s:%d',
-    getenv('SHELL_HOST') ?? 'localhost',
-    getenv('SHELL_PORT') ?? 80,
+    $host ? $host : 'localhost',
+    $port ?? 80,
 );
 
 $socket = stream_socket_server(
@@ -53,7 +53,7 @@ if (!$socket) {
 $loop = new LogLoop($logger, Factory::create());
 $connectionFactory = new CallableConnectionFactory(function () use ($logger) {
     return new LoggedConnection(
-	    $logger,
+        $logger,
         new Connection(...func_get_args())
     );
 });
@@ -63,12 +63,12 @@ $server = new LoggedServer(
 );
 $store = new Store();
 $commandFinder = new Finder(
-	new ByName(),
-	new MatchableFinder()
+    new ByName(),
+    new MatchableFinder()
 );
 $shell = new Shell(
     new InputParser(),
-	new Tokenizer(),
+    new Tokenizer(),
     $store,
     $commandFinder
 );

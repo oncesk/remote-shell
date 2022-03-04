@@ -4,36 +4,35 @@ namespace Shell\Tokenizer;
 
 class Tokenizer implements TokenizerInterface
 {
-	public function tokenize(array $input): array
-	{
-		$output = [];
+    public function tokenize(array $input): array
+    {
+        $output = [];
 
-		if ($input) {
-			$readingArguments = false;
-			foreach ($input as $kind) {
+        if ($input) {
+            $readingArguments = false;
+            foreach ($input as $kind) {
+                $output[] = [
+                    'token' => $token = $this->determineToken($kind, $readingArguments),
+                    'kind'  => $kind,
+                ];
 
-				$output[] = [
-					'token' => $token = $this->determineToken($kind, $readingArguments),
-					'kind'  => $kind,
-				];
+                $readingArguments = true;
 
-				$readingArguments = true;
+                if ($token === Token::PIPE) {
+                    $readingArguments = false;
+                }
+            }
+        }
 
-				if ($token === Token::PIPE) {
-					$readingArguments = false;
-				}
-			}
-		}
+        return $output;
+    }
 
-		return $output;
-	}
+    private function determineToken(string $kind, bool $doWeReadArguments): Token
+    {
+        if (!$doWeReadArguments) {
+            return Token::COMMAND;
+        }
 
-	private function determineToken(string $kind, bool $doWeReadArguments): Token
-	{
-		if (!$doWeReadArguments) {
-			return Token::COMMAND;
-		}
-
-		return '|' === $kind ? Token::PIPE : Token::ARGUMENT;
-	}
+        return '|' === $kind ? Token::PIPE : Token::ARGUMENT;
+    }
 }

@@ -9,13 +9,13 @@ use Shell\Console\Input\InputInterface;
 
 class ByName implements FinderInterface
 {
-	public function find(InputInterface $input, StoreInterface $store): CommandInterface
-	{
-		$name = $input->getName();
+    public function find(InputInterface $input, StoreInterface $store): CommandInterface
+    {
+        $name = $input->getName();
 
-		if ($store->has($name)) {
-			return $store->get($name);
-		}
+        if ($store->has($name)) {
+            return $store->get($name);
+        }
 
         foreach ($store->getAll() as $command) {
             if ($command instanceof AliasAwareInterface && in_array($name, $command->getAliases())) {
@@ -23,9 +23,9 @@ class ByName implements FinderInterface
             }
         }
 
-		throw new CommandNotFoundException(sprintf(
-			'Command \'%s\' not found',
-			$name
-		));
-	}
+        throw new CommandNotFoundException(sprintf(
+            'Command \'%s\' not found',
+            $name
+        ));
+    }
 }

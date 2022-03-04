@@ -6,5 +6,5 @@ use Shell\Server\ServerInterface;
 
 interface ApplicationInterface
 {
-	public function run(ServerInterface $server, ShellInterface $shell);
+    public function run(ServerInterface $server, ShellInterface $shell);
 }

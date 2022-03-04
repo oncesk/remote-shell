@@ -7,21 +7,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Pipe implements CommandInterface
 {
-	/**
-	 * @var CommandInterface[]
-	 */
-	private array $commands;
-	private array $arguments;
+    /**
+     * @var CommandInterface[]
+     */
+    private array $commands;
+    private array $arguments;
 
-	public function __construct(array $commands, array $arguments)
-	{
-		$this->commands = $commands;
-		$this->arguments = $arguments;
-	}
+    public function __construct(array $commands, array $arguments)
+    {
+        $this->commands = $commands;
+        $this->arguments = $arguments;
+    }
 
 
-	public function execute(InputInterface $input, OutputInterface $output)
-	{
-		// TODO: Implement execute() method.
-	}
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        // TODO: Implement execute() method.
+    }
 }

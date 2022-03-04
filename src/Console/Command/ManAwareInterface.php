@@ -4,5 +4,5 @@ namespace Shell\Console\Command;
 
 interface ManAwareInterface
 {
-	public function getMan(): string;
+    public function getMan(): string;
 }

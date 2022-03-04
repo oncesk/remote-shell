@@ -6,5 +6,5 @@ use Shell\Loop\LoopInterface;
 
 interface ConnectionFactoryInterface
 {
-	public function create($socket, ServerInterface $server, LoopInterface $loop): ConnectionInterface;
+    public function create($socket, ServerInterface $server, LoopInterface $loop): ConnectionInterface;
 }

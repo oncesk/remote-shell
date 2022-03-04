@@ -7,6 +7,6 @@ use Symfony\Component\Console\Input\InputInterface as SymfonyInput;
 
 interface InputInterface extends SymfonyInput
 {
-	public function getName(): string;
-	public function setDefinition(InputDefinition $definition): void;
+    public function getName(): string;
+    public function setDefinition(InputDefinition $definition): void;
 }
