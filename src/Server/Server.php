@@ -52,7 +52,7 @@ class Server implements ServerInterface
         return $this->connections;
     }
 
-    private function accept()
+    private function accept(): void
     {
         if ($sock = @stream_socket_accept($this->socket, 0)) {
             stream_set_blocking($sock, 0);
@@ -62,13 +62,11 @@ class Server implements ServerInterface
 
             $this->connections->attach($connection);
 
-            foreach ($this->onConnection as $callback) {
-                $this->callCallback($connection, $callback);
-            }
+            array_walk($this->onConnection, fn($callback) => $this->callCallback($connection, $callback));
         }
     }
 
-    private function callCallback(ConnectionInterface $connection, \Closure $callback)
+    private function callCallback(ConnectionInterface $connection, \Closure $callback): void
     {
         $fiber = new \Fiber(function (ConnectionInterface $connection, \Closure $closure) {
             $closure($connection);
@@ -77,7 +75,7 @@ class Server implements ServerInterface
         $fiber->start($connection, $callback);
     }
 
-    private function handleClose(ConnectionInterface $connection, $socket)
+    private function handleClose(ConnectionInterface $connection, $socket): void
     {
         $this->loop
             ->removeRead($socket)

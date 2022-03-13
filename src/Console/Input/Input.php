@@ -35,6 +35,7 @@ class Input extends ArgvInput implements InputInterface
 
     public function __toString(): string
     {
-        return $this->commandName . ' ' . parent::__toString();
+        $args = parent::__toString();
+        return $args ? $this->commandName . ' ' . $args : $this->commandName;
     }
 }

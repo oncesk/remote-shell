@@ -12,7 +12,8 @@
         "symfony/event-dispatcher": "^6.0",
         "clue/arguments": "^2.1",
         "monolog/monolog": "^2.3",
-        "symfony/dependency-injection": "^6.0"
+        "symfony/dependency-injection": "^6.0",
+        "mikey179/vfsstream": "^1.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

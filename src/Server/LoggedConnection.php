@@ -19,25 +19,28 @@ class LoggedConnection implements ConnectionInterface
     {
         $id = (string) $this->getStream();
 
-        $this->logger->debug('Reading from ' . $id);
+        $this->logger->debug("Connection [$id] : Reading");
         $read = $this->connection->read();
 
-        $this->logger->debug('Reading is completed from ' . $id);
+        $this->logger->debug("Connection [$id] : Read completed");
 
         return $read;
     }
 
     public function write($data): void
     {
+        $id = (string) $this->getStream();
+
+        $this->logger->debug("Connection [$id] : Writing");
         $this->connection->write($data);
     }
 
     public function close()
     {
         $id = (string) $this->getStream();
-        $this->logger->debug('Closing connection ' . $id);
+        $this->logger->debug("Connection [$id] : Closing...");
         $this->connection->close();
-        $this->logger->debug("Connection $id closed");
+        $this->logger->debug("Connection [$id] : Closed");
     }
 
     public function getStream()

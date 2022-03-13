@@ -1,9 +1,12 @@
 <?php
 
-namespace Shell\Tokenizer;
+namespace Shell\Console\Input\Tokenizer;
+
+use JetBrains\PhpStorm\Pure;
 
 class Tokenizer implements TokenizerInterface
 {
+    #[Pure]
     public function tokenize(array $input): array
     {
         $output = [];
@@ -33,6 +36,11 @@ class Tokenizer implements TokenizerInterface
             return Token::COMMAND;
         }
 
-        return '|' === $kind ? Token::PIPE : Token::ARGUMENT;
+        return match ($kind) {
+            '|' => Token::PIPE,
+            '>' => Token::GREATER,
+            '<' => Token::LESS,
+            default => Token::ARGUMENT,
+        };
     }
 }

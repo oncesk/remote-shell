@@ -3,21 +3,23 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Shell\Loop\LogLoop;
+use Shell\Console\Application;
+use Shell\Console\Command\Finder\ByName;
+use Shell\Console\Command\Finder\Finder;
+use Shell\Console\Command\Finder\MatchableFinder;
+use Shell\Console\Command\Store;
+use Shell\Console\Input\Substitution\Substitutor;
+use Shell\Console\Input\Substitution\VarSubstitutor;
+use Shell\Console\Input\InputParser;
+use Shell\Console\Input\Tokenizer\Tokenizer;
+use Shell\Console\Shell;
 use Shell\Loop\Factory;
-use Shell\Server\LoggedServer;
-use Shell\Server\Server;
+use Shell\Loop\LogLoop;
+use Shell\Server\CallableConnectionFactory;
 use Shell\Server\Connection;
 use Shell\Server\LoggedConnection;
-use Shell\Server\CallableConnectionFactory;
-use Shell\Console\Command\Store;
-use Shell\Console\Shell;
-use Shell\Console\Input\InputParser;
-use Shell\Tokenizer\Tokenizer;
-use Shell\Console\Command\Finder\Finder;
-use Shell\Console\Command\Finder\ByName;
-use Shell\Console\Command\Finder\MatchableFinder;
-use Shell\Console\Application;
+use Shell\Server\LoggedServer;
+use Shell\Server\Server;
 
 $isDebug = (bool) (getenv('SHELL_DEBUG') ?? false);
 
@@ -32,7 +34,7 @@ $port = getenv('SHELL_PORT');
 $address = sprintf(
     'tcp://%s:%d',
     $host ? $host : 'localhost',
-    $port ?? 80,
+    $port ? $port : 80,
 );
 
 $socket = stream_socket_server(
@@ -41,14 +43,15 @@ $socket = stream_socket_server(
     $errorMsg,
     STREAM_SERVER_LISTEN | STREAM_SERVER_BIND
 );
-stream_set_blocking($socket, 0);
-
-$logger->debug('Listening ' . $address);
 
 if (!$socket) {
     echo $errorCode . ' - ' . $errorMsg;
-    die;
+    exit(1);
 }
+
+stream_set_blocking($socket, 0);
+
+$logger->debug('Listening ' . $address);
 
 $loop = new LogLoop($logger, Factory::create());
 $connectionFactory = new CallableConnectionFactory(function () use ($logger) {
@@ -70,7 +73,10 @@ $shell = new Shell(
     new InputParser(),
     new Tokenizer(),
     $store,
-    $commandFinder
+    $commandFinder,
+    new Substitutor([
+        new VarSubstitutor(),
+    ])
 );
 
 try {

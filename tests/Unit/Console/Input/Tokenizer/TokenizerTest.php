@@ -1,10 +1,10 @@
 <?php
 
-namespace Shell\Tests\Unit\Tokenizer;
+namespace Shell\Tests\Unit\Console\Input\Tokenizer;
 
 use PHPUnit\Framework\TestCase;
-use Shell\Tokenizer\Token;
-use Shell\Tokenizer\Tokenizer;
+use Shell\Console\Input\Tokenizer\Token;
+use Shell\Console\Input\Tokenizer\Tokenizer;
 
 class TokenizerTest extends TestCase
 {
@@ -34,7 +34,7 @@ class TokenizerTest extends TestCase
 			[
 				['token' => Token::COMMAND, 'kind' => 'help'],
 				['token' => Token::ARGUMENT, 'kind' => '-h'],
-			]
+			],
 		];
 
 		yield [
@@ -45,7 +45,7 @@ class TokenizerTest extends TestCase
 			[
 				['token' => Token::COMMAND, 'kind' => 'echo'],
 				['token' => Token::ARGUMENT, 'kind' => 'Super long argument'],
-			]
+			],
 		];
 
 		yield [
@@ -60,7 +60,7 @@ class TokenizerTest extends TestCase
 				['token' => Token::ARGUMENT, 'kind' => '-s'],
 				['token' => Token::ARGUMENT, 'kind' => '0'],
 				['token' => Token::ARGUMENT, 'kind' => '/var/log/messages'],
-			]
+			],
 		];
 
 		yield [
@@ -77,7 +77,23 @@ class TokenizerTest extends TestCase
 				['token' => Token::PIPE, 'kind' => '|'],
 				['token' => Token::COMMAND, 'kind' => 'grep'],
 				['token' => Token::ARGUMENT, 'kind' => 'error'],
-			]
+			],
 		];
+
+        yield [
+            [
+                'echo',
+                'Hello',
+                '>',
+                'file',
+            ],
+            [
+                ['token' => Token::COMMAND, 'kind' => 'echo'],
+                ['token' => Token::ARGUMENT, 'kind' => 'Hello'],
+                ['token' => Token::GREATER, 'kind' => '>'],
+                ['token' => Token::COMMAND, 'kind' => 'file'],
+                ['token' => Token::ARGUMENT, 'kind' => 'error'],
+            ],
+        ];
 	}
 }

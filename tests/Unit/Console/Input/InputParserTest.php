@@ -1,9 +1,9 @@
 <?php
 
-namespace Shell\Tests\Unit\Console;
+namespace Shell\Tests\Unit\Console\Input;
 
 use PHPUnit\Framework\TestCase;
-use Shell\Console\InputParser;
+use Shell\Console\Input\InputParser;
 
 class InputParserTest extends TestCase
 {
@@ -29,21 +29,21 @@ class InputParserTest extends TestCase
 				'help',
 				[
 					'help',
-				]
+				],
 			],
 			[
 				'cat /var/log',
 				[
 					'cat',
 					'/var/log',
-				]
+				],
 			],
 			[
 				'echo "Hello World!"',
 				[
 					'echo',
 					'Hello World!',
-				]
+				],
 			],
 			[
 				'echo -s "Hello World!"',
@@ -51,7 +51,7 @@ class InputParserTest extends TestCase
 					'echo',
 					'-s',
 					'Hello World!',
-				]
+				],
 			],
 		];
 	}

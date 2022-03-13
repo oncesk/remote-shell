@@ -2,9 +2,11 @@
 
 namespace Shell\Console\Input;
 
+use Shell\Loop\LoopInterface;
+
 class Stdin implements StdinInterface
 {
-    public function __construct(private $stream)
+    public function __construct(private $stream, private LoopInterface $loop)
     {}
 
     public function read()
